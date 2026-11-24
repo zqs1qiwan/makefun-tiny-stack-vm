@@ -174,8 +174,10 @@ for (const ent of readdirSync(I, { withFileTypes: true }).sort((a, b) => (a.name
   if (!ent.isDirectory()) continue;
   const id = ent.name;
   const r = run(
-    new Uint8Array(readFileSync(join(I, id, 'program.bin'))),
-    new Uint8Array(readFileSync(join(I, id, 'input.bin'))),
+    // readFileSync already returns a Buffer, which is a Uint8Array:
+    // no need to copy the program and input bytes a second time.
+    readFileSync(join(I, id, 'program.bin')),
+    readFileSync(join(I, id, 'input.bin')),
   );
   mkdirSync(join(O, id), { recursive: true });
   writeFileSync(join(O, id, 'stdout.bin'), r.out);
